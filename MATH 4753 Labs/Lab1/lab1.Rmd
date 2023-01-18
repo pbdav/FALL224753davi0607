@@ -1,0 +1,30 @@
+---
+title: "Lab 1"
+author: "Parker Davis"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Tasks
+
+## Task 1
+
+Working directory is:
+```{r}
+getwd()
+```
+
+## Task 2
+
+First six lines of the DDT.csv is
+
+```{r}
+ddt <- read.csv("DDT-1.csv")
+```
+why wont it save?
+
+
