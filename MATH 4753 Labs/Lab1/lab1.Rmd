@@ -2,7 +2,10 @@
 title: "Lab 1"
 author: "Parker Davis"
 date: "`r Sys.Date()`"
-output: html_document
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -24,8 +27,106 @@ First six lines of the DDT.csv is
 
 ```{r}
 ddt <- read.csv("DDT-1.csv")
+head(ddt,6)
 ```
-Ok, so test this now
+
+## Task 3
+
+Qualitative Variables in the DDT data set: River, Species  
+
+Quantitative Variables in the DDT data set: Mile, Length, Weight, DDT  
+Number of species in DDT Data set:3 
+
+
+```{r}
+summary.data.frame(ddt) 
+
+
+big800 = with(ddt, ddt[WEIGHT > 800 & SPECIES == "LMBASS",])
+
+summary(big800)
+
+rvSCM = with(ddt, ddt[RIVER == "SCM"& DDT > 4.0,])
+
+summary(rvSCM)
+
+```
+
+Using these, we can see that the mean length of the fish in the ddt data frame is: 42.81  
+The standard deviation for weight of fish in the ddt data set is: 
+```{r}
+attach(ddt)
+sd(WEIGHT)
+```
+
+
+
+  
+Here is the plot of Length vs. Width
+
+
+
+```{r}
+with(ddt,plot(x = WEIGHT, y = LENGTH, pch=21, bg = "Red", main = "Length vs Width Plot"))
+```
+
+
+## Task 4
+
+Table and barplot of Rivers:
+
+```{r}
+rv=with(ddt,table(RIVER))
+rv
+barplot(rv, beside = TRUE, col = rainbow(4), main = "Rivers")
+
+```
+
+Table and barplot of Rivers crossed with Species of Fish:
+
+```{r}
+rvspc=with(ddt,table(RIVER,SPECIES))
+rvspc
+barplot(rvspc, main = "Table of Rivers crossed with Species of Fish")
+```
+
+
+## Task 5
+
+Pie Charts of Fish Species and Rivers
+
+```{r}
+pie(rv, col = 1:4, main = "Rivers")
+```
+
+```{r}
+spc=with(ddt,table(SPECIES))
+pie(spc, col = rainbow(3), main = "Fish Species")
+```
+
+## Task 6
+
+These are the boxplots for several variables 
+
+```{r}
+with(ddt,boxplot(DDT,ylab = "DDT", col = "Blue", notch = TRUE, main= "DDT Boxplot (with major outlier)"))
+
+with(ddt,boxplot(WEIGHT,ylab="Weight",col="Red",notch=TRUE,main="Weight Boxplot"))
+
+with(ddt, boxplot(LENGTH,ylab="Length",col="Purple",notch = TRUE,main="Length Boxplot"))
+
+```
+
+
+## Task 7
+
+These are the coplots for several variables
+
+```{r}
+coplot(LENGTH~WEIGHT|RIVER,data=ddt,col="Blue")
+coplot(DDT~WEIGHT|SPECIES, data=ddt)
+```
+
 
 
 
