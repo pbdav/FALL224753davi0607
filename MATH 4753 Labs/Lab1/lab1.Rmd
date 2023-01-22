@@ -35,24 +35,36 @@ head(ddt,6)
 Qualitative Variables in the DDT data set: River, Species  
 
 Quantitative Variables in the DDT data set: Mile, Length, Weight, DDT  
-Number of species in DDT Data set:3 
-
+Number of species in DDT Data set: 3 
 
 ```{r}
-summary.data.frame(ddt) 
+summary.data.frame(ddt)
+```
+This is the subset of the ddt data with only observations with SPECIES being LMBASS and WEIGHT bigger than 800 grams
 
+```{r}
 
 big800 = with(ddt, ddt[WEIGHT > 800 & SPECIES == "LMBASS",])
 
 summary(big800)
 
+```
+
+This is the subset of the ddt data with only observations where the RIVER is SCM and DDT is greater than 4.0
+```{r}
 rvSCM = with(ddt, ddt[RIVER == "SCM"& DDT > 4.0,])
 
 summary(rvSCM)
-
 ```
 
-Using these, we can see that the mean length of the fish in the ddt data frame is: 42.81  
+## Clicker Questions
+Using these data sets and subsets above, we can see that the mean length of the fish in the ddt data frame is: 
+```{r}
+attach(ddt)
+mean(LENGTH)
+```
+
+
 The standard deviation for weight of fish in the ddt data set is: 
 ```{r}
 attach(ddt)
@@ -62,7 +74,7 @@ sd(WEIGHT)
 
 
   
-Here is the plot of Length vs. Width
+Here is the ACTUAL plot of Length vs. Weight, the one in the lab manual is actually incorrect, due to the names of the axes being wrong. 
 
 
 
@@ -120,7 +132,7 @@ with(ddt, boxplot(LENGTH,ylab="Length",col="Purple",notch = TRUE,main="Length Bo
 
 ## Task 7
 
-These are the coplots for several variables
+These are the coplots for several variables:
 
 ```{r}
 coplot(LENGTH~WEIGHT|RIVER,data=ddt,col="Blue")
@@ -128,5 +140,29 @@ coplot(DDT~WEIGHT|SPECIES, data=ddt)
 ```
 
 
+## Task 8
 
+These are the plots created using ggplot:
+```{r}
+library(ggplot2)
 
+boxplot1 = ggplot(ddt, aes(x = SPECIES, y = WEIGHT))
+boxplot1 = boxplot1 + geom_boxplot(aes(fill = RIVER)) + 
+  ggtitle("Parker Davis") + labs(x="SPECIES", y="WEIGHT")
+boxplot1
+
+```
+
+```{r}
+vp = ggplot(ddt, aes(x = RIVER, y = LENGTH))
+vp = vp + geom_violin(aes(fill = SPECIES)) + ggtitle("Parker Davis") + labs(x= "RIVER", y= "LENGTH")
+
+vp
+```
+
+```{r}
+sp = ggplot(ddt, aes(x=WEIGHT, y=LENGTH))
+sp = sp+ geom_point(aes(color = SPECIES))+ ggtitle("Parker Davis") + labs(x="WEIGHT", y= "LENGTH")
+
+sp
+```
