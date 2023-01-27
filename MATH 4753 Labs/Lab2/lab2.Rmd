@@ -24,12 +24,12 @@ getwd()
 ## Task 2
 ```{r}
 #Using Dr. Stewart's way
-dird="C:\\RPACKAGES\\FALL224753davi0607\\MATH 4753 Labs\\Lab2\\"
+directory="C:\\RPACKAGES\\FALL224753davi0607\\MATH 4753 Labs\\Lab2\\"
 
 
 #The function to read data in by Dr. Stewart
 myread=function(csv){
-  fl=paste(dird,csv,sep="")
+  fl=paste(directory,csv,sep="")
   read.table(fl,header=TRUE,sep=",")
 }
 
@@ -80,7 +80,7 @@ boxplot(mpg, col = "Black", notch = TRUE, main= "Boxplot representing MPG data",
 
 Using Chebyshev's Theorem, we woud predict the proportion of data within 2 sd of the mean to be (at least):
 ```{r}
-1-(1/4)
+1-(1/(2^2))
 ```
 The exact proportion within 2 sd of the mean is
 ```{r}
@@ -88,7 +88,7 @@ The exact proportion within 2 sd of the mean is
 length(mpg[abs(z)<2])/length(mpg)
 ```
 
-From this information, we can say that Chebyshev would agree with the data. This is because the theorem states that 'at least' 3/4 of the data will dall within 2 sd. While the actual proportion was closer to .96, that still is greater than 3/4, which Chebyshev predicts. Chebyshev's proportion lays out the minimum proportion per amount of standard deviations, so if we had a proportion less than 3/4, then I would be concerned with the data.  
+From this information, we can say that Chebyshev would agree with the data. This is because the theorem states that 'at least' 3/4 of the data will fall within 2 sd. While the actual proportion was closer to .96, that still is greater than 3/4, which Chebyshev predicts. Chebyshev's proportion lays out the minimum proportion per amount of standard deviations, so if we had a proportion less than 3/4, then I would be concerned with the data.  
 <br>Using the Empirical Rule, approximately .95 is the proportion of the data that should be within 2 standard deviations. This corresponds very well, as the actual proportion of the data is .96.
 
 ```{r}
