@@ -10,20 +10,9 @@ runtime: shiny
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-This R Markdown document is made interactive using Shiny. Unlike the more traditional workflow of creating static reports, you can now create documents that allow your readers to change the assumptions underlying your analysis and see the results immediately. 
+## Code for Plot and Widgets
 
-To learn more, see [Interactive Documents](http://rmarkdown.rstudio.com/authoring_shiny.html).
-
-## Inputs and Outputs
-
-You can embed Shiny inputs and outputs in your document. Outputs are automatically updated whenever inputs change.  This demonstrates how a standard R plot can be made interactive by wrapping it in the Shiny `renderPlot` function. In the case below we use the `selectInput` function to create the input widget used to drive the plot.
-
-There are other widgets we can make!!
-
-Notice that there are essentially only two parts
-
- 1. Input (Controls)
- 2. Render ( Often a plot)
+Here is the modified code for the Spruce plots widget. 
 
 ```{r slr, echo=FALSE}
 library(ggplot2)
@@ -36,33 +25,46 @@ inputPanel(
   
   
   selectInput("plotg", "Choose plot type",
-      list(`points` = c("g", "gheat", "gratio"),
-           `point size` = c("gsheat", "gsratio")
+      list("Combined", "Points", "Points with Line Segments", "Simple     Linear Regression Line"
       )
     )
 )
 
 renderPlot({
   
- g = ggplot(spruce.df, aes(x = BHDiameter, y = Height)) + geom_point() 
+ g = ggplot(spruce.df, aes(x = BHDiameter, y = Height, color = Height)) + geom_point() 
 
- gh = g + geom_point(aes(col = Height)) 
+ grl = ggplot(spruce.df, aes(x= BHDiameter, y= Height)) + geom_smooth(method="lm")
  
- gb = g + geom_point(aes(col = BHDiameter)) 
+ gpl = g + geom_line()
  
- gsh =  g + geom_point(aes(size = Height, col = Height))
+ gc = ggplot(spruce.df, aes(x=BHDiameter,y=Height, color=Height))+geom_point() + geom_line()+ geom_smooth(method="lm")
  
- gsb = g + geom_point(aes(size = BHDiameter, col = BHDiameter))
-  
- if(input$plotg == "g") print(g)
+ if(input$plotg == "Combined")
+ {
+   print(gc)
+   ggsave("Combined.png", path = getwd())
+ }
+ if(input$plotg == "Points")
+   {print(g)
+   ggsave("points.png", path=getwd())
+   } 
  
- if(input$plotg == "gheight")   print(gh)
+ if(input$plotg == "Points with Line Segments"){
+   print(gpl)
+   ggsave("LineSeg.png", path = getwd())
+   
+ }
  
- if(input$plotg == "gsbhdiameter")   print(gsb)
+ if(input$plotg == "Simple     Linear Regression Line")
+ {
+   print(grl)
+   ggsave("RegLine.png", path = getwd())
+   
+ }
+
  
- if(input$plotg == "gsheight")   print(gsh)
- 
- if(input$plotg == "gbhdiameter")   print(gr)
+
  
    
 })

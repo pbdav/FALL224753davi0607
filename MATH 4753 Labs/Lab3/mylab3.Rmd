@@ -162,7 +162,7 @@ with(spruce.df, segments(BHDiameter,Height,BHDiameter,mean(Height)))
 
 ```
 
-### Calculating Values
+### Calculating Values RSS, MSS, and TSS, and interpreting values
 
 ```{r}
 #residual sum of squares
@@ -182,12 +182,11 @@ Here are some other required calculations:
 ```{r}
 MSS/TSS
 ```
-This number represents:
+This number of MSS/TSS represents how well the model fits the data, as the calculation for MSS/TSS is equal to R^2 (MSS/TSS=R^2), our correlation coefficient. In the case of this data, we can say there is a moderate correlation between Height and BHDiameter, due to our R^2 value of .6569146.
 
 ```{r}
 TSS
 RSS+MSS
-TSS==RSS+MSS
 ```
 
 As you can see, the sum of RSS and MSS are equal to TSS.
@@ -232,4 +231,10 @@ g+ggtitle("Height vs BHDiameter")
 ```
 
 
+## Task 7 
 
+Here are my images of the Shiny Widget options
+
+![](RegLine.png){ width=70%}
+![](points.png){ width=70%}
+![](LineSeg.png){ width=70%}
