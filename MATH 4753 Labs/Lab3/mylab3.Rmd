@@ -12,7 +12,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-#Tasks
+# Tasks
 
 ## Task 1
 
@@ -233,7 +233,7 @@ g+ggtitle("Height vs BHDiameter")
 
 ## Task 7 
 
-Here are my images of the Shiny Widget options
+Here are my images of the Shiny Widget options. I also included my Task 7 Shiny application for your reference.
 
 ![](RegLine.png){ width=70%}
 ![](points.png){ width=70%}
