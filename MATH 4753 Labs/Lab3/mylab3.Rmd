@@ -1,0 +1,235 @@
+---
+title: "Lab 3"
+author: "Parker Davis"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Tasks
+
+## Task 1
+
+Getting the Working Direcotry
+
+```{r}
+getwd()
+```
+
+## Task 2  
+This is where I read in the SPRUCE data:
+
+```{r}
+
+dird="C:\\RPACKAGES\\FALL224753davi0607\\MATH 4753 Labs\\Lab3\\"
+
+myread=function(csv){
+  fl=paste(dird,csv,sep="")
+  read.table(fl,header=TRUE,sep=",")
+}
+
+spruce.df=myread("SPRUCE.csv")#MS pg478
+
+
+#First six lines:
+head(spruce.df)
+
+```
+
+
+
+
+
+
+## Task 3  
+
+### Initial Scatter Plot
+
+This is the initial scatter plot of the data (x=BHDiameter, y=Height)
+
+
+
+```{r}
+with(spruce.df,  
+  plot(Height~BHDiameter,bg="Blue",pch=21,ylim=c(0,1.1*max(Height)),
+      xlim=c(0,1.1*max(BHDiameter)), main = "Initial Scatter Plot", cex = 1.2))
+
+```
+
+Based on this plot, I would be open to saying that there appears to either be a very weak straight line relationship, or possibly a quadratic relationship could be applied as well.
+
+### Trendscatter Plots (f=0.5,0.6,0.7)
+
+```{r}
+#Load in the s20x package
+library(s20x)
+
+#Create the layout
+layout(matrix(1:3, nr=1, nc = 3, byrow = TRUE))
+
+layout.show(3)
+
+#Create the trendscatter plots
+trendscatter(Height~BHDiameter,f=0.5, data=spruce.df, main = "Height vs. BHDiameter")
+mtext("f=0.5", side = 3)
+trendscatter(Height~BHDiameter,f=0.6, data=spruce.df, main = "Height vs. BHDiameter")
+mtext("f=0.6", side = 3)
+trendscatter(Height~BHDiameter,f=0.7, data=spruce.df, main = "Height vs. BHDiameter")
+mtext("f=0.7", side = 3)
+
+
+```
+
+### Straight Line Relationship Plot
+
+```{r}
+# Making a linear model
+spruce.lm=with(spruce.df, lm(Height~BHDiameter))
+
+#Making the new scatter plot
+with(spruce.df, 
+     plot(Height~BHDiameter,bg="Blue",pch=21,ylim=c(0,1.1*max(Height)),xlim=c(0,1.1*max(BHDiameter)), main = "New Scatter Plot of Height vs. BHDiameter")
+)
+
+
+#Plotting a least squares regression line
+abline(spruce.lm)
+```
+
+For this graph, I don't think a straight line is appropriate! When plotted against the data, you can pretty clearly see a curve in the data from the leftmost data point to the rightmost data point. When I look at the smoother curve plots, every regression line has some sort of a curve in it, which leads me to believe that a curved best fit line would be better accustomed to this data set versus a straight line.
+
+## Task 4 
+
+### Four Plots
+
+```{r}
+layout(matrix(1:4, nr=2, nc = 2, byrow = TRUE))
+layout.show(4)
+
+#FIRST PLOT
+
+with(spruce.df, 
+     plot(Height~BHDiameter,bg="Blue",pch=21,ylim=c(0,1.1*max(Height)),xlim=c(0,1.1*max(BHDiameter)))
+)
+abline(spruce.lm)
+
+#SECOND PLOT
+
+with(spruce.df, 
+     plot(Height~BHDiameter,bg="Blue",pch=21,ylim=c(0,1.1*max(Height)),xlim=c(0,1.1*max(BHDiameter)))
+)
+abline(spruce.lm)
+#Make the yhat values 
+yhat=fitted(spruce.lm)
+
+# Draw in the segments making the residuals
+with(spruce.df,{
+  segments(BHDiameter,Height,BHDiameter,yhat)
+})
+
+#THIRD PLOT
+
+with(spruce.df, 
+     plot(Height~BHDiameter,bg="Blue",pch=21,ylim=c(0,1.1*max(Height)),xlim=c(0,1.1*max(BHDiameter)))
+)
+
+#plot mean of height line and regression line
+with(spruce.df, abline(h=mean(Height)))
+abline(spruce.lm)
+
+#make the deviations of the fitted line and mean line
+with(spruce.df, segments(BHDiameter,mean(Height),BHDiameter,yhat))
+
+#FOURTH PLOT
+
+with(spruce.df, 
+     plot(Height~BHDiameter,bg="Blue",pch=21,ylim=c(0,1.1*max(Height)),xlim=c(0,1.1*max(BHDiameter)))
+)
+
+#plot mean of height line
+with(spruce.df,abline(h=mean(Height)))
+
+#plot deviation columns of the mean line
+with(spruce.df, segments(BHDiameter,Height,BHDiameter,mean(Height)))
+
+
+
+```
+
+### Calculating Values
+
+```{r}
+#residual sum of squares
+RSS=with(spruce.df,sum((Height-yhat)^2))
+RSS
+
+#model sum of squares
+MSS=with(spruce.df,sum((yhat-mean(Height))^2))
+MSS
+
+#total sum of squares
+TSS=with(spruce.df,sum((Height-mean(Height))^2))
+TSS
+```
+
+Here are some other required calculations:
+```{r}
+MSS/TSS
+```
+This number represents:
+
+```{r}
+TSS
+RSS+MSS
+TSS==RSS+MSS
+```
+
+As you can see, the sum of RSS and MSS are equal to TSS.
+
+
+## Task 5
+
+### Summary/Equation of Best Fit Line
+
+Here is the summary for spruce.lm
+```{r}
+summary(spruce.lm)
+coef(spruce.lm)
+
+#Slope coefficient: .48147
+#Intercept coefficient: 9.14684
+#Equation: Height = 9.14684 + .48147*BHDiameter
+```
+The coefficients can be found in the 'Estimates' column, or under the results produced by the coef() method. The estimated slope is 0.48147, while the estimated intercept is 9.14684  
+Therefore, the equation of the fitted line made by spruce.lm is:
+Height = 9.146839 + .4814743 * BHDiameter
+
+### Prediction of Height of Spruce at Preset Diameters
+
+```{r}
+#predict height at 15, 18, 20 cm
+predict(spruce.lm, data.frame(BHDiameter=c(15,18,20)))
+```
+
+So then, we can see that for the tree with a 15 cm diameter, the predicted height is 16.37, for the tree with the 18 cm diameter, the predicted height is 17.81, and for the tree with the 20 cm diameter, the predicted height is 18.78
+
+## Task 6 
+
+Making a gg plot of the data:
+```{r}
+library(ggplot2)
+g=ggplot(spruce.df, aes(x=BHDiameter,y=Height, color=Height))
+g=g+geom_point() + geom_line()+ geom_smooth(method="lm")
+g+ggtitle("Height vs BHDiameter")
+
+
+```
+
+
+
