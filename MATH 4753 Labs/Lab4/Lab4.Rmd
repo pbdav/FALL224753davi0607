@@ -1,0 +1,69 @@
+---
+title: "Lab 4"
+author: "Parker Davis"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Tasks
+
+## Task 1
+
+Obtain working directory
+```{r}
+getwd()
+```
+
+## Task 2
+
+Reading in the SPRUCE file.
+
+```{r}
+spruce.df <- read.csv("SPRUCE.csv")
+tail(spruce.df)
+```
+
+## Task 3
+
+### Trenscatter plot
+
+```{r}
+library(s20x)
+trendscatter(Height~BHDiameter, f=0.5, data = spruce.df)
+```
+
+### Linear Object
+
+```{r}
+spruce.lm = with(spruce, lm(Height~BHDiameter))
+```
+
+### Residuals
+
+```{r}
+height.res <- residuals(spruce.lm)
+```
+
+
+### Fitted Values
+
+```{r}
+height.fit <- fitted(spruce.lm)
+```
+
+### Plots of residuals vs fitted
+
+```{r}
+plot(height.fit,height.res)
+trendscatter(height.fit, height.res)
+```
+
+The shape that I see in the residual plot is a quadratic curve! This aligns with the plots that were created of the data.
