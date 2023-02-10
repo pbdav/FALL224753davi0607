@@ -3,10 +3,10 @@ Title: Package for Class
 Version: 0.1.0.9000
 Author: 
    Parker Davis
-Maintaiusener: Parker Davis <parker.b.davis-1@ou.edu>
-Description: What the package does (one paragraph).
+Maintainer: Parker Davis <parker.b.davis-1@ou.edu>
+Description: Contains functions needed in MATH 4753
 License: 
-    MIT + file LICENSE
+    GPL-2
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
@@ -17,3 +17,4 @@ Suggests:
     rmarkdown,
     knitr
 vignetteBuilder: knitr
+VignetteBuilder: knitr

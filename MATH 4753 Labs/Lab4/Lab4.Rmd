@@ -27,7 +27,9 @@ getwd()
 Reading in the SPRUCE file.
 
 ```{r}
-spruce.df <- read.csv("SPRUCE.csv")
+library(FALL224753davi0607)
+spruce.df = rdfl("SPRUCE.csv", "C:\\RPACKAGES\\FALL224753davi0607\\MATH 4753 Labs\\Lab4\\")
+#spruce.df <- read.csv("SPRUCE.csv")
 tail(spruce.df)
 ```
 
@@ -43,7 +45,7 @@ trendscatter(Height~BHDiameter, f=0.5, data = spruce.df)
 ### Linear Object
 
 ```{r}
-spruce.lm = with(spruce, lm(Height~BHDiameter))
+spruce.lm = with(spruce.df, lm(Height~BHDiameter))
 ```
 
 ### Residuals
@@ -62,8 +64,234 @@ height.fit <- fitted(spruce.lm)
 ### Plots of residuals vs fitted
 
 ```{r}
-plot(height.fit,height.res)
+plot(height.fit,height.res, main = "Residuals vs Fitted for SPRUCE dataset")
 trendscatter(height.fit, height.res)
 ```
 
 The shape that I see in the residual plot is a quadratic curve! This aligns with the plots that were created of the data.
+
+### Residual Plot
+
+```{r}
+plot(spruce.lm, which = 1)
+```
+
+### Check Normality
+
+```{r}
+normcheck(spruce.lm, shapiro.wilk = TRUE)
+```
+
+The p-value for the Shapiro Wilk test was .29, and the NULL hypothesis is that the distribution is noramlly distributed.
+
+### Conclusions
+
+Taking into consideration the residual plot for the linear model, along with the normality check plot, I do not think it is valid to apply a linear model to this data set. The plot of the residuals is supposed to be normal in distribution, which they are close to, but also with mean 0 and a constant variance. When we look at the plot of the residuals against the fitted values of the linear model, we can see that there is a clear trend to the points, which does not give us a mean of 0 with the line of best fit. 
+
+## Task 4
+
+### Quadratic Model, Plot with Quad.lm
+```{r}
+attach(spruce.df)
+quad.lm = lm(Height~BHDiameter + I(BHDiameter^2), data = spruce.df)
+summary(quad.lm)
+
+
+
+plot(Height~BHDiameter,bg="Blue",pch=21,cex=1.2,
+ylim=c(0,max(Height)),xlim=c(0,max(BHDiameter)), 
+main="Spruce height prediction",data=spruce.df)
+
+coef(quad.lm)
+
+quad.lm$coef[2]
+
+myplot = function(x){
+  quad.lm$coef[1]+quad.lm$coef[2]*x + quad.lm$coef[3]*x^2
+  
+}
+curve(myplot, lwd = 2, col = "green3", add = TRUE)
+
+```
+
+### Fitted Model
+
+```{r}
+quad.fit = fitted(quad.lm)
+
+```
+
+### Plot of Residuals vs Fitted
+```{r}
+plot(quad.lm, which =1 )
+```
+
+### Normcheck/ Shapiro-Wilk Test
+
+```{r}
+normcheck(quad.lm, shapiro.wilk  = TRUE)
+```
+This p-value is much higher than our linear model, p=.684, which signals that a quadratic fit is more able to accurately fit a trend line to our spruce data set. 
+
+## Task 5
+
+### Summary of the quad.lm object
+
+```{r}
+summary(quad.lm)
+```
+
+### Values of B0, B1, B2
+
+```{r}
+coef(quad.lm)
+```
+$\beta_0$ = 0.86089  
+$\beta_1$= 1.46959  
+$\beta_2$= -0.02745
+
+### Interval estimates for B0, B1, B2
+```{r}
+summary(quad.lm)
+```
+If we use the standard error to calculate the intervals,  
+$\beta_0$: .8608 +- 2.21 (-1.3492 -- 3.0708)  
+$\beta_1$: 1.469 +- .2438 (1.2252 -- 1.7128)  
+$\beta_2$: -.027457 +- .006635 (-.034092 -- -.020822)
+
+The equation for the fitted line is:  
+$y = .8608 + 1.469x + -.027457x^2$  
+where y = Height, and x = Diameter.
+
+
+### Predcting Heights
+```{r}
+predict(quad.lm, data.frame(BHDiameter=c(15,18,20)))
+```
+We can also use the predict20x() method
+```{r}
+data = c(15,18,20)
+predict20x(quad.lm, data.frame(BHDiameter = data, `I(BHDiameter)^2` = data^2))
+
+```
+We can see these are fairly the same results.
+
+
+### Comparing R^2 values
+
+```{r}
+summary(spruce.lm)
+summary(quad.lm)
+```
+The value of the multiple r-squared for the Linear model is .6569, while the multiple r-squared value for the quadratic model is .7741. 
+
+The same can be said for the adjusted r squared value, the adjusted r^2 value for the quadratic model is still greater thn the adjusted r^2 value for the linear model. Adjusted R^2 serves as a metric to determine how useful a model is, by determining the percentage of variance in the data points that can be explained by the input variable. Using this statistic, I would say the quadratic model is better, as its predictive value is higher than the linear model. 
+
+
+The multiple r-squared value represents how good our x variable is at predicting our response variable (y), in this case, how well Diameter can predict Height. Because the mr^2 value is higher for the quadratic model, we can conclude that the quadratic model could be better at predicting height values than the linear model. 
+
+Combining these two statistics, the multiple r^2 and the adjusted r^2 values, I believe that the quadratic model best explains the most variability in height.
+
+### Comparing The Two Models by Anova()
+
+```{r}
+anova(spruce.lm, quad.lm)
+```
+Because the p-value of .0002269 is associated with the second model, the anova function returns that the second model (with the squared term) is the better model to represent the data. 
+
+### TSS, MSS, RSS for the Quadratic Model
+
+```{r}
+RSS = with(quad.lm, sum((Height - quad.fit)^2))
+#RSS for Quadratic Model:
+RSS
+
+MSS = with(quad.lm, sum((quad.fit-mean(Height))^2))
+#MSS for Quadratic Model:
+MSS
+
+TSS = with(quad.lm, sum((Height - mean(Height))^2))
+TSS2 = RSS + MSS
+#TSS for Quadratic Model
+TSS
+TSS2
+
+TaskValue = MSS/TSS
+TaskValue
+```
+The value of MSS/TSS for the quadratic model is .7741, which is also the multiple r^2 value for the quadratic model.
+
+## Task 6
+
+### Cooks Plot
+
+```{r}
+cooks20x(quad.lm)
+```
+
+Cooks distance is a way to find large and influential outliers in a dataset, points that will weaken a regression model or line of best fit. In other words, the greater the cooks distance, the more residuals that point may have.  
+
+Cooks distance for this quadratic model tells us that there are a few strong outliers, however, most of the places I looked at definitions for Cooks distance say distances over .5 are worth taking another look at, and there are no distances over .5! This could mean that our model fits are data in a way that reduces the amount of outliers and is a better overall fit for our data. 
+
+### Quadratic Model with 24th Data Point Removed 
+
+```{r}
+quad2.lm = lm(Height~BHDiameter + I(BHDiameter^2), data = spruce.df[-24,])
+summary(quad2.lm)
+summary(quad.lm)
+```
+Between the two summaries, you can see that the 2nd Quadratic Model we created without the major outlier actually increased the multiple r^2 value from the 1st quad.lm, up to .8159 from .7741 in the original quadratic model. If we remember, a multiple r^2 value of 1 means that the quadratic model perfectly predicts the data, so the new 2nd quadratic model having a higher r^2 value means that the data more closely fits the best fit curve without the major outlier at the 24th spot. 
+
+## Task 7
+
+### Creating the Piecewise plot
+
+
+
+### Proof
+
+Suppose that for (on the plot) line 1 and line 2, we determine the following formulas:  
+$$
+l1 : y = \beta_0 + \beta_1x \\
+$$
+$$
+l2 : y = \beta_0 + \delta + (\beta_1 + \zeta)x
+$$
+Then at the change point (where the two lines intersect), we can say that
+
+$$
+\beta_0 + \beta_1x_k = \beta_0 + \delta + (\beta_1 + \zeta)x_k
+$$
+Hence we have 
+
+$$
+\delta = -\zeta x_k
+$$
+And therefore we can write l2, the second equation, as 
+$$
+y=\beta_0 - \zeta x_k + (\beta_1+\zeta)x_k
+$$
+Which can be rewritten as
+$$
+y = \beta_0 +\beta_1x + \zeta(x-x_k)
+$$
+Which shows how l2 is l1 with an adjustment term.  
+We can then introduce an indicator function that will be 1 when $x > x_k$ and $0$ else.
+
+$$
+y = \beta_0 + \beta_1x + \zeta(x-x_k)I(x>x_k)
+$$
+
+
+
+
+## Task 8
+
+### Using My 'rdfl' Function (Read File)
+```{r}
+library(FALL224753davi0607)
+force.df = rdfl("FORCE.csv", "C:\\RPACKAGES\\FALL224753davi0607\\MATH 4753 Labs\\Lab4\\")
+head(force.df)
+```
+What this function does is take in a csv file in the directory of my choosing and return to me the data in a data frame I can create vectors with and work with. I kind of got tired of reloading my data in every lab, and typing out the function in every RMD lab document, so this way, I am able to read in the data by way of a simple function included in my lab package. Easy Peasy!
+
