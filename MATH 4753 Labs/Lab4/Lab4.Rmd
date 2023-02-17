@@ -185,7 +185,7 @@ summary(quad.lm)
 ```
 The value of the multiple r-squared for the Linear model is .6569, while the multiple r-squared value for the quadratic model is .7741. 
 
-The same can be said for the adjusted r squared value, the adjusted r^2 value for the quadratic model is still greater thn the adjusted r^2 value for the linear model. Adjusted R^2 serves as a metric to determine how useful a model is, by determining the percentage of variance in the data points that can be explained by the input variable. Using this statistic, I would say the quadratic model is better, as its predictive value is higher than the linear model. 
+The same can be said for the adjusted r squared value, the adjusted r^2 value for the quadratic model is still greater than the adjusted r^2 value for the linear model. Adjusted R^2 serves as a metric to determine how useful a model is, by determining the percentage of variance in the data points that can be explained by the input variable. Using this statistic, I would say the quadratic model is better, as its predictive value is higher than the linear model. 
 
 
 The multiple r-squared value represents how good our x variable is at predicting our response variable (y), in this case, how well Diameter can predict Height. Because the mr^2 value is higher for the quadratic model, we can conclude that the quadratic model could be better at predicting height values than the linear model. 
@@ -246,6 +246,23 @@ Between the two summaries, you can see that the 2nd Quadratic Model we created w
 
 ### Creating the Piecewise plot
 
+```{r}
+sp2.df=within(spruce.df, X<-(BHDiameter-18)*(BHDiameter>18)) 
+sp2.df
+
+lmpcw=lm(Height~BHDiameter + X,data=sp2.df)
+tmpcw=summary(lmpcw)
+names(tmpcw)
+myf = function(x,coef){
+  coef[1]+coef[2]*(x) + coef[3]*(x-18)*(x-18>0)
+}
+plot(spruce.df,main="Piecewise regression")
+myf(0, coef=tmpcw$coefficients[,"Estimate"])
+curve(myf(x,coef=tmpcw$coefficients[,"Estimate"] ),add=TRUE, lwd=2,col="Blue")
+abline(v=18)
+text(18,16,paste("R sq.=",round(tmpcw$r.squared,4) ))
+
+```
 
 
 ### Proof
@@ -294,4 +311,21 @@ force.df = rdfl("FORCE.csv", "C:\\RPACKAGES\\FALL224753davi0607\\MATH 4753 Labs\
 head(force.df)
 ```
 What this function does is take in a csv file in the directory of my choosing and return to me the data in a data frame I can create vectors with and work with. I kind of got tired of reloading my data in every lab, and typing out the function in every RMD lab document, so this way, I am able to read in the data by way of a simple function included in my lab package. Easy Peasy!
+
+
+
+
+```{r}
+library(FALL224753davi0607)
+mtbe1 <- rdfl("MTBE.csv", "C:\\RPACKAGES\\FALL224753davi0607\\MATH 4753 Labs\\Lab4\\" )
+mtbe2 <- rdfl("MTBE-2.csv", "C:\\RPACKAGES\\FALL224753davi0607\\MATH 4753 Labs\\Lab4\\")
+
+tab <- table(mtbe1$WellClass, mtbe1$MTBE.Detect)
+atab <- addmargins(tab)
+atab
+
+
+
+```
+
 

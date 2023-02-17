@@ -1,0 +1,271 @@
+---
+title: "Lab5"
+author: "Parker Davis"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Tasks
+
+## Task 1
+
+### Obtain Working Directory
+```{r}
+getwd()
+```
+
+## Task 2
+
+### 'mybin' Function from Dr. Stewart
+```{r}
+
+mybin=function(iter=100,n=10, p=0.5){ 
+print(p)
+sam.mat=matrix(NA,nr=n,nc=iter, byrow=TRUE)
+
+#Create a vector for successes
+succ=c()
+
+#loop through all iterations
+for( i in 1:iter){
+
+#Fill in the matrix with values of 1 and 0 dependent on p
+sam.mat[,i]=sample(c(1,0),n,replace=TRUE, prob=c(p,1-p))
+
+#Sum the successes (1's) from the column i of sam.mat
+succ[i]=sum(sam.mat[,i])
+}
+
+succ.tab=table(factor(succ,levels=0:n))
+
+barplot(succ.tab/(iter), col=rainbow(n+1), main="Binomial simulation", xlab="Number of successes")
+succ.tab/iter
+
+}
+```
+
+### 100 Iterations
+
+```{r}
+mybin(iter=100,n=10, p=0.7)
+```
+
+### 200 Iterations
+
+```{r}
+mybin(iter=200,n=10, p=0.7)
+```
+
+### 500 Iterations
+
+```{r}
+mybin(iter = 500, n = 10, p = 0.7)
+
+```
+
+### 1000 Iterations
+
+```{r}
+mybin(iter=1000, n=10, p=0.7)
+```
+
+### 10,000 Iterations
+
+```{r}
+tab = mybin(iter=10000, n=10, p = 0.7)
+
+
+
+```
+
+### 10000 Iteration Table
+
+```{r}
+tab
+```
+
+### dbinom() Verification
+
+```{r}
+```
+
+
+```{r}
+dbin = dbinom(0:10, 10, 0.7)
+dbinTab = round((dbin), 4)
+names(dbinTab)<- 0:10
+dbinTab
+
+```
+As we can see, the values given in the table by the dbinom() function closely resemble the values in table we created with the mybin() function!
+
+
+
+## Task 3
+
+### Creating a Sample w/o Replacement
+
+```{r}
+bagomarbles = function(numMarbles, whiteMarbs, blackMarbs){
+marbles <- vector(mode="integer", length = numMarbles)
+blackMarbs = blackMarbs + whiteMarbs
+for(i in 1:length(marbles))
+{
+  if (i<=whiteMarbs)
+    marbles[i] = 1
+  if(i>whiteMarbs & i<=blackMarbs)
+    marbles[i] = 0
+}
+print("1 represents white marbles, 0 represents black marbles")
+print("Bag of marbles:")
+print(marbles)
+}
+#bagomarbles(20, 12, 8)
+#This is the sample:
+sample(bagomarbles(20, 12, 8),size=5, replace=FALSE)
+
+```
+### Creating a Sample With Replacement
+
+```{r}
+sample(bagomarbles(20,12,8), size = 5, replace = TRUE)
+```
+### 'myhyper()' Function
+
+```{r}
+myhyper=function(iter=100,N=20,r=12,n=5, tab = TRUE){
+# make a matrix to hold the samples
+#initially filled with NA's
+sam.mat=matrix(NA,nr=n,nc=iter, byrow=TRUE)
+#Make a vector to hold the number of successes over the trials
+succ=c()
+for( i in 1:iter){
+#Fill each column with a new sample
+sam.mat[,i]=sample(rep(c(1,0),c(r,N-r)),n,replace=FALSE)
+#Calculate a statistic from the sample (this case it is the sum)
+succ[i]=sum(sam.mat[,i])
+}
+#Make a table of successes
+succ.tab=table(factor(succ,levels=0:n))
+#Make a barplot of the proportions
+barplot(succ.tab/(iter), col=rainbow(n+1), main="HYPERGEOMETRIC simulation", xlab="Number of successes")
+
+#Make an option to display the table of successes (fraction of 1)
+if(tab == TRUE)
+{
+  return(succ.tab/iter)
+}
+
+}
+```
+
+### Barplots of White Marble Successes over Iteration
+
+```{r}
+#Iterate 100 times, total num of marbles = 20, number of whites = 12, take 5 samples
+myhyper(iter = 100, N = 20, r = 12, n = 5, tab = FALSE)
+myhyper(iter = 200, N = 20, r = 12, n = 5, tab = FALSE)
+myhyper(iter = 500, N = 20, r = 12, n = 5, tab = FALSE)
+myhyper(iter = 1000, N = 20, r = 12, n = 5, tab = FALSE)
+myhyper(iter = 10000, N = 20, r = 12, n = 5, tab = TRUE)
+```
+### Verifying output
+
+```{r}
+dhyper(0:5, 12, 8, 5, log = FALSE)
+```
+As we can see, the values output by the dhyper() function closely resemble those values that we received from the table of 'succ.tab/iter' from the myhyper() function!
+
+## Task 4
+
+### 'mysample()' Function
+
+Just looking at this function, I can see that it involves taking a random sample of n out of 10 numbers, and then make a factor of that sample. I think that the time part might represent taking a different sample after a certain amount of time, but I am not sure. Maybe it makes as many samples as can fit within the time frame you specify?
+
+```{r}
+mysample=function(n, iter=10,time=0.5){
+for( i in 1:iter){
+#make a sample
+s=sample(1:10,n,replace=TRUE)
+# turn the sample into a factor
+sf=factor(s,levels=1:10)
+#make a barplot
+barplot(table(sf)/n,beside=TRUE,col=rainbow(10), 
+main=paste("Example sample()", " iteration ", i, " n= ", n,sep="") ,
+ylim=c(0,0.2)
+)
+
+#release the table
+Sys.sleep(time)
+}
+}
+
+```
+
+```{r}
+mysample(n = 1000, iter = 1, time = 1)
+
+```
+
+
+It looks like this mysample() function iterated and created a new sample every 1 to 2 seconds, over the course of 30 iterations. It then created a plot for each iteration, just like with the other functions we have created. It also took 1000 samples of the 1-10 values, and returned in the plot the percentage of successes out of all the responses.  
+I would compare the mysample function to dice rolling, as each value has an equal probability. 
+
+NOTE: I could not figure out how to display just one plot out of the 30, so I changed the iterations to just 1 to display only one plot.
+
+
+## Task 5
+
+### Combination
+```{r}
+choose(8,4)
+```
+
+
+```{r}
+1-ppois(4, lambda = 2)
+```
+
+```{r}
+dnbinom(7,3,0.4)
+```
+```{r}
+pbinom(8, 15, 0.4)
+```
+
+
+## Task 6
+
+### Bag of Marbles Function
+```{r}
+FALL224753davi0607::bagomarbles(25,14,11)
+newbag <- FALL224753davi0607::bagomarbles(25,14,11)
+newbag[1]
+```
+
+### mybinom Function
+
+```{r}
+FALL224753davi0607::binom(10000,10,.6)
+```
+
+```{r}
+dbinom(6, 10, .5)
+mybin(10000, 10, .5)
+
+((pbinom(6,10,.5)) - (pbinom(3,  10, .5)))
+
+pbinom(6, 10, .5, lower.tail = FALSE)
+
+pbinom(7, 10, .5)
+
+
+```
+
