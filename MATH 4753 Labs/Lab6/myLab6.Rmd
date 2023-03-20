@@ -1,0 +1,291 @@
+---
+title: "Lab 6"
+author: "Parker Davis"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+    theme: darkly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Tasks
+
+## Task 1
+
+```{r}
+getwd()
+```
+## Task 2
+
+This is the created layout with normal curve plots.:  
+
+```{r}
+layout(matrix(1:4, nr=2,nc=2))
+#Plot 1
+curve(dnorm(x, mean=10,sd=4),xlim=c(-10,30))
+#Plot 2
+curve(dnorm(x, mean=10,sd=2),xlim=c(0,20))
+#Plot 3
+curve(dnorm(x, mean=5,sd=10),xlim=c(-30,40))
+#Plot 4
+curve(dnorm(x, mean=5,sd=.5),xlim=c(3.5,6.5))
+
+
+
+```
+
+Individual plots of regions and probabilities:
+
+```{r}
+curve(dnorm(x, mean = 0, sd = 1), xlim = c(-3, 3))
+xcurve = seq(2, 0+3*1, length = 1000)
+ycurve = dnorm(xcurve, mean = 0, sd = 1)
+polygon(c(2,xcurve,0+3*1),c(0,ycurve,0),col="Red")
+title('Y~ N(0,1), (P >= 2)')
+prob1=1-pnorm(2,mean=0,sd=1)
+prob1=round(prob1,4)
+text(x = 2, y = .35, labels= paste('Prob/Area: ', prob1))
+```
+
+```{r}
+curve(dnorm(x, mean = 4, sd = 2), xlim = c(-2, 10))
+xcurve = seq(1, 5, length = 1000)
+ycurve = dnorm(xcurve, mean = 4,sd = 2)
+polygon(c(1,xcurve,5),c(0,ycurve,0), col = 'darkgreen')
+title('Y ~ N(4,2), P(1 <= Y < 5)')
+prob2 = pnorm(5, mean = 4, sd = 2)-pnorm(1, mean = 4, sd = 2)
+prob2 = round(prob2, 4)
+text(7.6, .17, paste('Prob/Area: ', prob2))
+```
+
+```{r}
+curve(dnorm(x, mean = 10, sd = 4), xlim = c(-2,22))
+xcurve=seq(10-3*4, 10, length = 1000)
+ycurve = dnorm(xcurve, mean = 10, sd = 4)
+polygon(c(10-3*4,xcurve,10), c(0,ycurve,0), col = 'steelblue')
+title('Y ~ N(10,4), P(Y < 10)')
+prob3 = pnorm(10, mean = 10, sd = 4)
+prob3 = round(prob3, 4)
+text(17, 0.08, paste('Prob/Area: ', prob3))
+```
+
+```{r}
+curve(dnorm(x, mean = -2, sd = .5), xlim = c(-3.5, -.5))
+xcurve=seq(-3, -2, length = 1000)
+ycurve = dnorm(xcurve, mean = -2, sd = .5)
+polygon(c(-3, xcurve, -2), c(0, ycurve, 0), col = 'purple')
+title('Y ~ N(-2,.5), P(-3 < Y <= -2)')
+prob4 = pnorm(-2, mean = -2, sd=.5)-pnorm(-3, mean = -2, sd = .5)
+prob4 = round(prob4, 4)
+text(-1, .6, paste('Prob/Area: ', prob4))
+```
+
+## Task 3
+
+Overlay of the three gamma plots:  
+
+```{r}
+curve(dgamma(x,shape=1,scale=1),xlim=c(0,10),ylim=c(0,1),col="Red",lwd=2,
+ylab="Gamma density", main="Gamma curves")
+curve(dgamma(x,shape=3,scale=1),xlim=c(0,10),ylim=c(0,1),add=TRUE,lwd=2)
+curve(dgamma(x,shape=5,scale=1),xlim=c(0,10),ylim=c(0,1),add=TRUE, col="Blue",lwd=2)
+text(6,.8, paste('Red: Shape=1, Black: Shape=3, Blue: Shape=5'))
+```
+
+Plotting regions and probabilities:  
+
+```{r}
+curve(dgamma(x,shape=3,scale=2),xlim=c(0,20),ylim=c(0,.5),lwd=2,
+ylab="Gamma density", main="Y ~ Gamma(shape = 3, scale = 2), P(2 < Y < 5)")
+xcurve = seq(2, 5, length = 1000)
+ycurve = dgamma(xcurve, shape = 3, scale = 2)
+polygon(c(2, xcurve, 5), c(0, ycurve, 0), col = 'red')
+gprob1 = pgamma(5, shape=3, scale = 2)-pgamma(2, shape=3, scale = 2)
+gprob1 =round(gprob1, 4)
+text(15, .4, paste('Prob/Area: ', gprob1))
+```
+
+```{r}
+curve(dgamma(x,shape=6,scale=3),xlim=c(0,30),ylim=c(0,.09),lwd=2,
+ylab="Gamma density", main="Y ~ Gamma(shape = 6, scale = 3), P(1 < Y < 4)")
+xcurve = seq(1, 4, length = 1000)
+ycurve = dgamma(xcurve, shape = 6, scale = 3)
+polygon(c(1, xcurve, 4), c(0, ycurve, 0), col = 'blue')
+gprob2 = pgamma(4, shape=6, scale = 3)-pgamma(1, shape=6, scale = 3)
+gprob2 =round(gprob2, 4)
+text(20, .08, paste('Prob/Area: ', gprob2))
+```
+
+```{r}
+curve(dgamma(x,shape=2,scale=4),xlim=c(0,30),ylim=c(0,.3),lwd=2,
+ylab="Gamma density", main="Y ~ Gamma(shape = 2, scale = 4), P(3 < Y < 6)")
+xcurve = seq(3,6, length = 1000)
+ycurve = dgamma(xcurve, shape = 2, scale = 4)
+polygon(c(3, xcurve, 6), c(0, ycurve, 0), col = 'darkgreen')
+gprob3 = pgamma(6, shape=2, scale = 4)-pgamma(3, shape=2, scale = 4)
+gprob3 =round(gprob3, 4)
+text(20, .08, paste('Prob/Area: ', gprob3))
+```
+
+## Task 4
+
+Four chi-square plot layout:
+
+```{r}
+layout(matrix(1:4, nr=2,nc=2))
+
+curve(dchisq(x,df=1),xlim=c(0,10),ylim=c(0,1.5),lwd=2,
+ylab="Chisq density", main="df=1")
+curve(dchisq(x,df=2),xlim=c(0,15),ylim=c(0,1),lwd=2,
+ylab="Chisq density", main="df=2")
+curve(dchisq(x,df=4),xlim=c(0,20),ylim=c(0,1),lwd=2,
+ylab="Chisq density", main="df=4")
+curve(dchisq(x,df=20),xlim=c(0,40),ylim=c(0,1),lwd=2,
+ylab="Chisq density", main="df=20")
+```
+
+
+Plots with probabilities and regions:  
+
+```{r}
+curve(dchisq(x,df=2),xlim=c(0,10),ylim=c(0,1),lwd=2,
+ylab="Chisq density", main="Y ~ chisq(df = 2), P(2 <= Y <= 4)")
+xcurve = seq(2,4,length = 1000)
+ycurve = dchisq(xcurve, df = 2)
+polygon(c(2,xcurve,4), c(0,ycurve,0), col = 'pink')
+cprob1 = pchisq(4, df =2 ) - pchisq(2, df = 2)
+cprob1 = round(cprob1, 4)
+text(8,.8, paste('Prob/Area: ', cprob1))
+```
+
+```{r}
+curve(dchisq(x,df=3),xlim=c(0,15),ylim=c(0,1),lwd=2,
+ylab="Chisq density", main="Y ~ chisq(df = 3), P(3 <= Y <= 5)")
+xcurve = seq(3,5,length = 1000)
+ycurve = dchisq(xcurve, df = 3)
+polygon(c(3,xcurve,5), c(0,ycurve,0), col = 'yellow')
+cprob2 = pchisq(5, df =3 ) - pchisq(3, df = 3)
+cprob2 = round(cprob2, 4)
+text(12,.8, paste('Prob/Area: ', cprob2))
+```
+
+```{r}
+curve(dchisq(x,df=20),xlim=c(0,30),ylim=c(0,1),lwd=2,
+ylab="Chisq density", main="Y ~ chisq(df = 20), P(10 <= Y <=21)")
+xcurve = seq(10,21,length = 1000)
+ycurve = dchisq(xcurve, df = 20)
+polygon(c(10,xcurve,21), c(0,ycurve,0), col = 'orange')
+cprob3 = pchisq(21, df =20 ) - pchisq(10, df = 20)
+cprob3 = round(cprob3, 4)
+text(25,.8, paste('Prob/Area: ', cprob3))
+```
+
+## Task 5
+
+Four Weibull plots:  
+
+```{r}
+layout(matrix(1:4, nr = 2, nc = 2))
+curve(dweibull(x,shape=1, scale = 1), xlim=c(0,10), ylab = 'Weibull density', main = 'Shape=1, Scale=1', lwd = 2)
+
+curve(dweibull(x, shape = 4, scale = 1), xlim =c(0,10), ylab = 'Weibull density', main = 'Shape = 4 ,Scale = 1', lwd = 2)
+
+curve(dweibull(x, shape = 3, scale = 2), xlim = c(0,10), ylab = 'Weibull density', main = 'Shape = 3, Scale = 2', lwd = 2)
+
+curve(dweibull(x, shape = 5, scale = 3), xlim = c(0,10), ylab = 'Weibull density', main = 'Shape = 5, Scale = 3', lwd = 2)
+
+```
+
+3 Plots and probabilities:
+
+```{r}
+curve(dweibull(x, shape = 3, scale = 5), xlim = c(0,10), ylab = 'Weibull density', main = 'Shape = 3, Scale = 5, P(6<Y<9)', lwd = 2)
+xcurve = seq(6,9, length = 1000)
+ycurve = dweibull(xcurve, shape = 3, scale = 5)
+polygon(c(6,xcurve,9), c(0,ycurve,0), col = 'steelblue')
+wprob4 = pweibull(9, shape=3, scale=5)-pweibull(6,shape=3,scale=5)
+wprob4=round(wprob4, 4)
+text(8,.15,paste('Prob/Area: ', wprob4))
+```
+
+
+```{r}
+curve(dweibull(x, shape = 4, scale = 2), xlim = c(0, 10), ylab = 'Weibull density', main = 'Shape = 4, Scale = 2, P(1<Y<2)', lwd = 2)
+xcurve = seq(1,2, length = 1000)
+ycurve = dweibull(xcurve, shape = 4, scale = 2)
+polygon(c(1,xcurve,2), c(0,ycurve,0), col = 'darkgreen')
+wprob3 = pweibull(2, shape=4, scale=2)-pweibull(1,shape=4,scale=2)
+wprob3=round(wprob3, 4)
+text(7,.4,paste('Prob/Area: ', wprob3))
+```
+
+```{r}
+curve(dweibull(x, shape = 2, scale = 3), xlim = c(0,10), ylab = 'Weibull density', main = 'Shape = 2, Scale = 3, P(2<Y<4)', lwd = 2)
+xcurve = seq(2,4, length = 1000)
+ycurve = dweibull(xcurve, shape = 2, scale = 3)
+polygon(c(2,xcurve,4), c(0,ycurve,0), col = 'purple')
+wprob2 = pweibull(4, shape=2, scale=3)-pweibull(2,shape=2,scale=3)
+wprob2=round(wprob2, 4)
+text(6,.20,paste('Prob/Area: ', wprob2))
+```
+
+## Task 6
+
+Four plot layout for the beta function (Limit from 0 to 1):
+
+```{r}
+layout(matrix(1:4, nr = 2, nc = 2))
+curve(dbeta(x, shape1=1, shape2=1), xlim = c(0,1), ylab = 'Beta density',main = 'Shape1 = 1, Shape2 = 1', lwd =2)
+curve(dbeta(x, shape1 = 3, shape2 = 4), xlim = c(0,1), ylab = 'Beta density', main = 'Shape1 = 3, Shape2 = 4', lwd = 2)
+curve(dbeta(x, shape1=2, shape2=5), xlim = c(0,1), ylab = 'Beta density',main = 'Shape1 = 2, Shape2 = 5', lwd =2)
+curve(dbeta(x, shape1 = 5, shape2 = 3), xlim = c(0,1), ylab = 'Beta density', main = 'Shape1 = 5, Shape2 = 3', lwd = 2)
+```
+
+3 plots with probabilities:
+
+```{r}
+curve(dbeta(x, shape1 = 1, shape2 = 2), xlim = c(0,1), ylab = 'Weibull density', main = 'Shape1 = 1, Shape2 = 2, P(.2<Y<.4)', lwd = 2)
+xcurve= seq(.2, .4, length = 1000)
+ycurve = (dbeta(xcurve, shape1 = 1, shape2 = 2))
+polygon(c(.2, xcurve,.4), c(0,ycurve,0), col = 'red')
+bprob1 = pbeta(.4, shape1 = 1, shape2 = 2)-pbeta(.2, shape1= 1, shape2 = 2)
+bprob1 = round(bprob1, 4)
+text(.8, 1.2, paste('Prob/Area: ', bprob1))
+
+
+
+```
+
+```{r}
+curve(dbeta(x, shape1 = 2, shape2 = 4), xlim = c(0,1), ylab = 'Weibull density', main = 'Shape1 = 2, Shape2 = 4, P(.7<Y<.8)', lwd =2)
+xcurve= seq(.7, .8, length = 1000)
+ycurve = (dbeta(xcurve, shape1 =2, shape2 = 4))
+polygon(c(.7, xcurve,.8), c(0,ycurve,0), col = 'steelblue')
+bprob2 = pbeta(.8, shape1 = 2, shape2 = 4)-pbeta(.7, shape1= 2, shape2 = 4)
+bprop2 = round(bprob2, 4)
+text(.8, 1.2, paste('Prob/Area: ', bprob2))
+```
+
+```{r}
+curve(dbeta(x, shape1 = 3, shape2 = 5), xlim = c(0,1), ylab = 'Weibull density', main = 'Shape1 = 3, Shape2 = 5, P(.3<Y<.5)')
+xcurve= seq(.3, .5, length = 1000)
+ycurve = (dbeta(xcurve, shape1 = 3, shape2 = 5))
+polygon(c(.3, xcurve,.5), c(0,ycurve,0), col = 'pink')
+bprob3 = pbeta(.5, shape1 = 3, shape2 = 5)-pbeta(.3, shape1= 3, shape2 = 5)
+bprob3 = round(bprob3, 4)
+text(.8, 1.2, paste('Prob/Area: ', bprob3))
+```
+
+## Task 7
+
+Using the myncurve function:
+
+```{r}
+FALL224753davi0607::myncurve(7,10,2)
+```
+
